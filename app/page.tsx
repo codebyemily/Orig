@@ -69,13 +69,13 @@ export default function HomePage() {
             Clearing browser data removes all Orig data permanently.
           </p>
         </div>
-        <Link href="/about" className="ml-auto whitespace-nowrap">
-          <Button variant="ghost" size="sm">How it works →</Button>
+        <Link href="/privacy" className="sm:ml-auto whitespace-nowrap">
+          <Button variant="ghost" size="sm">Privacy →</Button>
         </Link>
       </Card>
 
       {/* Quote strip */}
-      <div className="mt-12 flex flex-col sm:flex-row gap-4 text-center">
+      <div className="mt-12 grid grid-cols-1 gap-4 text-center sm:grid-cols-3">
         {[
           '"Your signature is invisibly embedded."',
           '"Signed by @maya.art — April 24, 2026, 2:14 PM."',

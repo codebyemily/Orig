@@ -32,7 +32,14 @@ export default function ProfileForm() {
   if (!profile) return null
 
   return (
-    <Card className="p-6">
+    <Card className="rounded-2xl p-5 sm:p-6">
+      <div className="mb-5">
+        <h3 className="text-base font-semibold text-slate-900">Edit profile</h3>
+        <p className="mt-1 text-sm text-slate-500">
+          These details are stored locally and used when you sign new images.
+        </p>
+      </div>
+
       <form onSubmit={handleSave} className="space-y-5">
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">
@@ -75,9 +82,12 @@ export default function ProfileForm() {
           />
         </div>
 
-        <Button type="submit" className="w-full">
-          {saved ? '✓ Saved' : 'Save Profile'}
-        </Button>
+        <div className="space-y-2 pt-1">
+          <Button type="submit" className="w-full">
+            {saved ? '✓ Profile saved' : 'Save profile'}
+          </Button>
+          <p className="text-xs text-slate-400">Saved locally in this browser only.</p>
+        </div>
       </form>
     </Card>
   )
