@@ -1,11 +1,18 @@
 interface PageContainerProps {
   children: React.ReactNode
   className?: string
+  size?: 'default' | 'wide'
 }
 
-export default function PageContainer({ children, className = '' }: PageContainerProps) {
+export default function PageContainer({
+  children,
+  className = '',
+  size = 'default',
+}: PageContainerProps) {
+  const maxWidth = size === 'wide' ? 'max-w-6xl' : 'max-w-4xl'
+
   return (
-    <div className={`max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 ${className}`}>
+    <div className={`mx-auto w-full ${maxWidth} px-4 py-10 sm:px-6 lg:px-8 ${className}`}>
       {children}
     </div>
   )

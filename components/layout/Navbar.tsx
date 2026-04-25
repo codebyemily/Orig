@@ -14,27 +14,36 @@ const links = [
 
 export default function Navbar() {
   const pathname = usePathname()
+
   return (
-    <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
-      <nav className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-14">
-        <Link href="/" className="flex items-center gap-2 font-bold text-lg tracking-tight text-slate-900">
-          <span className="text-brand-600 text-xl">◈</span>
+    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
+      <nav className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
+        <Link
+          href="/"
+          className="flex shrink-0 items-center gap-2 text-lg font-bold tracking-tight text-slate-900"
+        >
+          <span className="text-xl text-brand-600">◈</span>
           <span>Orig</span>
         </Link>
-        <div className="flex items-center gap-1">
-          {links.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                pathname === href
-                  ? 'bg-brand-100 text-brand-700'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-              }`}
-            >
-              {label}
-            </Link>
-          ))}
+
+        <div className="flex flex-wrap items-center justify-end gap-1 sm:gap-2">
+          {links.map(({ href, label }) => {
+            const active = pathname === href
+
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                  active
+                    ? 'bg-brand-100 text-brand-700'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                }`}
+              >
+                {label}
+              </Link>
+            )
+          })}
         </div>
       </nav>
     </header>
