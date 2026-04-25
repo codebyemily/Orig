@@ -1,0 +1,15 @@
+import type { RegistryEntry } from '@/types/registry'
+
+export function exportRegistryAsJson(entries: RegistryEntry[]): string {
+  return JSON.stringify(entries, null, 2)
+}
+
+export function downloadJson(json: string, filename: string): void {
+  const blob = new Blob([json], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  a.click()
+  URL.revokeObjectURL(url)
+}
