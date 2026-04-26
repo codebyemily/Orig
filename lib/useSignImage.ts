@@ -9,7 +9,7 @@ import { exportPng, triggerDownload } from './canvas/exportPng'
 import { generateThumbnail } from './canvas/thumbnail'
 import { encodeLSB } from './stego/encodeLSB'
 import { serializePayload } from './stego/payload'
-import { sha256Hex } from './crypto/sha256'
+import { normalizeImageDataForHash, sha256Hex } from './crypto/sha256'
 import { addRegistryEntry } from './storage/registryStorage'
 
 type SignStatus = 'idle' | 'signing' | 'done' | 'error'
@@ -40,10 +40,11 @@ export function useSignImage(profile: ArtistProfile | null) {
       setStatus('signing')
       setError(null)
 
-      try {
-        const canvas = await loadImageToCanvas(file)
-        const imageData = extractImageData(canvas)
-        const imageHash = await sha256Hex(imageData.data)
+    try {
+      const canvas = await loadImageToCanvas(file)
+      const imageData = extractImageData(canvas)
+      const normalizedBytes = normalizeImageDataForHash(imageData.data)
+      const imageHash = await sha256Hex(normalizedBytes)  
 
         const payload: SignaturePayload = {
           artistId: profile.id,
