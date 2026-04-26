@@ -32,22 +32,6 @@ export default function AboutPage() {
             files — no visible watermark, no server upload, no account. If your
             art gets stolen, drag it into Orig to prove it&apos;s yours.
           </p>
-
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link
-              href="/sign"
-              className="rounded-xl bg-brand-500 px-6 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-brand-600"
-            >
-              ✍️ Sign an image
-            </Link>
-
-            <Link
-              href="/verify"
-              className="rounded-xl border border-slate-300 bg-white px-6 py-3 text-base font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
-            >
-              🔍 Verify ownership
-            </Link>
-          </div>
         </section>
 
         {/* Three feature cards */}
