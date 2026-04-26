@@ -42,17 +42,65 @@ export default function Navbar() {
   }, [pathname])
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur">
-      <nav className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur">
+      {/* Mobile */}
+      <nav className="flex w-full items-center justify-between px-4 py-3 md:hidden">
         <Link
           href="/registry"
-          className="flex shrink-0 items-center gap-2 text-lg font-bold tracking-tight text-slate-900"
+          className="flex items-center gap-2 text-base font-bold tracking-tight text-slate-900"
         >
-          <span className="text-xl text-brand-600">◈</span>
+          <span className="text-brand-600">◈</span>
           <span>Orig</span>
         </Link>
 
-        <div className="hidden items-center gap-1 sm:gap-2 md:flex">
+        <div ref={menuRef} className="relative">
+          <button
+            type="button"
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-expanded={open}
+            onClick={() => setOpen((prev) => !prev)}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-50"
+          >
+            <span className="text-base">{open ? '✕' : '☰'}</span>
+          </button>
+
+          {open && (
+            <div className="absolute right-0 mt-2 w-40 rounded-xl border border-slate-200 bg-white p-2 shadow-lg">
+              <div className="flex flex-col gap-1">
+                {links.map(({ href, label }) => {
+                  const active = pathname === href
+
+                  return (
+                    <Link
+                      key={href}
+                      href={href}
+                      className={`rounded-md px-3 py-2 text-sm font-medium ${
+                        active
+                          ? 'bg-brand-100 text-brand-700'
+                          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                      }`}
+                    >
+                      {label}
+                    </Link>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+      </nav>
+
+      {/* Desktop */}
+      <nav className="relative hidden w-full items-center justify-center px-8 py-3 md:flex">
+        <Link
+          href="/registry"
+          className="absolute left-8 flex items-center gap-2 text-lg font-bold tracking-tight text-slate-900"
+        >
+          <span className="text-brand-600">◈</span>
+          <span>Orig</span>
+        </Link>
+
+        <div className="flex items-center gap-2">
           {links.map(({ href, label }) => {
             const active = pathname === href
 
@@ -70,42 +118,6 @@ export default function Navbar() {
               </Link>
             )
           })}
-        </div>
-
-        <div ref={menuRef} className="relative md:hidden">
-          <button
-            type="button"
-            aria-label={open ? 'Close menu' : 'Open menu'}
-            aria-expanded={open}
-            onClick={() => setOpen((prev) => !prev)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 bg-white/85 text-slate-700 shadow-sm transition hover:bg-slate-50"
-          >
-            <span className="text-lg">{open ? '✕' : '☰'}</span>
-          </button>
-
-          {open && (
-            <div className="absolute right-0 mt-2 w-44 rounded-xl border border-slate-200 bg-white/95 p-2 shadow-lg backdrop-blur">
-              <div className="flex flex-col gap-1">
-                {links.map(({ href, label }) => {
-                  const active = pathname === href
-
-                  return (
-                    <Link
-                      key={href}
-                      href={href}
-                      className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                        active
-                          ? 'bg-brand-100 text-brand-700'
-                          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                      }`}
-                    >
-                      {label}
-                    </Link>
-                  )
-                })}
-              </div>
-            </div>
-          )}
         </div>
       </nav>
     </header>
