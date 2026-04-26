@@ -8,7 +8,7 @@ const embeddedFields = [
   { title: 'Timestamp', description: 'When the image was signed' },
   { title: 'Contact URL', description: 'Optional website or social link' },
   { title: 'Copyright', description: 'Optional copyright statement' },
-  { title: 'Image hash', description: 'Used to help detect later changes' },
+  { title: 'Image/PDF hash', description: 'Used to help detect later changes' },
 ]
 
 export default function AboutPage() {
@@ -100,15 +100,6 @@ export default function AboutPage() {
           </Card>
         </section>
 
-        {/* About header */}
-        <section>
-          <h2 className="text-3xl font-bold text-slate-900">About Orig</h2>
-          <p className="mt-2 text-base text-slate-500">
-            What Orig does, how invisible signing works, and the limits of the
-            technology.
-          </p>
-        </section>
-
         {/* What Orig does */}
         <section>
           <h3 className="mb-3 text-xl font-bold text-slate-800">
@@ -117,20 +108,24 @@ export default function AboutPage() {
 
           <Card className="space-y-3 p-6 text-sm leading-relaxed text-slate-600">
             <p>
-              Orig helps artists invisibly sign digital images directly in the
-              browser. Instead of adding a visible watermark, Orig hides
-              ownership data inside the image itself.
+              Orig lets creators embed ownership information directly into their files — without changing how they look.
             </p>
 
             <p>
-              That means you can sign a file, keep the artwork visually
-              unchanged, and later verify whether a copy still carries an Orig
-              signature.
+              For images, Orig hides a signature inside the pixel data instead of adding a visible watermark. For documents like PDFs, it embeds ownership data into the file itself. In both cases, the original appearance stays the same.
             </p>
 
+            <div>
+              <p className="mb-1">This means you can:</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>sign your work</li>
+                <li>share it normally</li>
+                <li>later verify whether a copy still carries your signature</li>
+              </ul>
+            </div>
+
             <p>
-              Everything runs locally in your browser. Your images are never
-              uploaded to a server.
+              Everything runs locally in your browser. Your files are never uploaded or sent to a server.
             </p>
           </Card>
         </section>
@@ -141,25 +136,30 @@ export default function AboutPage() {
             How it works
           </h3>
 
-          <Card className="space-y-3 p-6 text-sm leading-relaxed text-slate-600">
-            <p>
-              Every digital image is made of pixels. Each pixel stores red,
-              green, and blue color values. Orig modifies the least significant
-              bit of those values — a tiny change that is not visible to the
-              human eye, but can still be read by software.
-            </p>
+          <Card className="space-y-4 p-6 text-sm leading-relaxed text-slate-600">
+            
+            <div>
+              <p className="font-semibold text-slate-700 mb-1">Images</p>
+              <p>
+                Every digital image is made of pixels. Each pixel stores red, green, and blue color values. Orig modifies the least significant bit of those values — a tiny change that is invisible to the human eye, but still readable by software.
+              </p>
 
-            <p>
-              Orig embeds ownership data such as your display name, artist ID,
-              timestamp, and other signature details into those bits. When you
-              verify an image later, Orig reads that hidden data back out.
-            </p>
+              <p className="mt-2">
+                Orig embeds ownership data such as your display name, artist ID, and timestamp into these bits. When you verify an image later, Orig reads that hidden data back out.
+              </p>
 
-            <p>
-              Orig always exports signed files as PNG, because PNG preserves
-              image data exactly. Formats like JPEG can destroy hidden watermark
-              data through recompression.
-            </p>
+              <p className="mt-2">
+                Signed images are exported as PNG, because PNG preserves pixel data exactly. Formats like JPEG can destroy embedded data through recompression.
+              </p>
+            </div>
+
+            <div>
+              <p className="font-semibold text-slate-700 mb-1">PDFs</p>
+              <p>
+                For PDF files, Orig embeds ownership information into the document’s internal metadata. This keeps the document visually unchanged while allowing Orig to detect the signature during verification.
+              </p>
+            </div>
+
           </Card>
         </section>
 

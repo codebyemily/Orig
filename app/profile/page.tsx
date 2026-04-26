@@ -30,9 +30,6 @@ export default function ProfilePage() {
         <section className="space-y-4">
           <div>
             <h2 className="text-lg font-semibold text-slate-900">Profile details</h2>
-            <p className="mt-1 text-sm text-slate-500">
-              Update the identity information embedded into images you sign.
-            </p>
           </div>
           <ProfileForm />
         </section>
@@ -40,9 +37,6 @@ export default function ProfilePage() {
         <section className="space-y-4">
           <div>
             <h2 className="text-lg font-semibold text-slate-900">Artist ID</h2>
-            <p className="mt-1 text-sm text-slate-500">
-              Your browser-generated identifier stays consistent across signatures.
-            </p>
           </div>
           <ArtistIdCard />
         </section>

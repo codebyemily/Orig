@@ -14,11 +14,6 @@ export default function VerifyPage() {
         <h1 className="mb-2 text-3xl font-bold text-slate-900">
           {fileType === 'image' ? 'Verify an Image' : 'Verify a PDF'}
         </h1>
-        <p className="text-slate-500">
-          {fileType === 'image'
-            ? 'Drag any image — your own work, or something you found online — to reveal whether it carries an Orig signature.'
-            : 'Upload a PDF to check whether it carries an Orig ownership signature.'}
-        </p>
       </div>
 
       <div className="mb-6 flex w-fit gap-1 rounded-lg bg-slate-100 p-1">

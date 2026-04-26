@@ -7,8 +7,8 @@ export default function PrivacyPage() {
       <div className="mb-8">
         <h1 className="mb-2 text-3xl font-bold text-slate-900">Privacy</h1>
         <p className="text-slate-500">
-          Orig is built to keep your work local. This page explains what is stored, what is not
-          collected, and what stays on your device.
+          Orig is designed to minimize data exposure. This page explains what stays in your browser,
+          what may be stored by the app, and what Orig does not collect.
         </p>
       </div>
 
@@ -16,12 +16,13 @@ export default function PrivacyPage() {
         <Card className="space-y-3 p-6 text-sm leading-relaxed text-slate-600">
           <h2 className="text-lg font-semibold text-slate-800">What stays local</h2>
           <p>
-            Orig processes images directly in your browser using standard web APIs. Your image files
-            are not uploaded to a server for signing or verification.
+            Orig processes supported files such as images and PDFs directly in your browser during
+            signing and verification. Your uploaded files are not sent to a third-party service for
+            analysis.
           </p>
           <p>
-            Your artist profile and signature registry are stored in your browser&apos;s localStorage
-            for this site only.
+            Image and PDF signing logic runs client-side, and signed files are generated in your
+            browser before download.
           </p>
         </Card>
 
@@ -32,37 +33,50 @@ export default function PrivacyPage() {
             <li>Your artist ID</li>
             <li>Your optional contact URL</li>
             <li>Your optional copyright statement</li>
-            <li>Your local signature registry</li>
+            <li>Your signature registry, depending on the feature being used</li>
           </ul>
+        </Card>
+
+        <Card className="space-y-3 p-6 text-sm leading-relaxed text-slate-600">
+          <h2 className="text-lg font-semibold text-slate-800">Profile and app storage</h2>
+          <p>
+            Orig may store profile information through the app so your signing identity can persist
+            across sessions. Some data, such as registry entries and signed file references, may also
+            be stored locally in your browser.
+          </p>
+          <p>
+            Storage behavior may differ by feature as Orig expands beyond image signing.
+          </p>
         </Card>
 
         <Card className="space-y-3 p-6 text-sm leading-relaxed text-slate-600">
           <h2 className="text-lg font-semibold text-slate-800">What Orig does not do</h2>
           <ul className="list-inside list-disc space-y-1.5">
-            <li>Orig does not upload your images</li>
-            <li>Orig does not create an account for you</li>
-            <li>Orig does not use analytics or tracking scripts</li>
-            <li>Orig does not send your signature data to a server</li>
+            <li>Orig does not add visible watermarks unless a feature explicitly says so</li>
+            <li>Orig does not use advertising trackers</li>
+            <li>Orig does not require a public profile or social account to sign work</li>
+            <li>Orig does not send your files to an outside watermarking service</li>
           </ul>
         </Card>
 
         <Card className="space-y-3 p-6 text-sm leading-relaxed text-slate-600">
           <h2 className="text-lg font-semibold text-slate-800">Network requests</h2>
           <p>
-            After the app loads, Orig is designed to avoid sending image or profile data anywhere.
-            Your signing and verification actions happen locally in the browser.
+            Orig may make requests to its own application backend for features such as profile
+            persistence. However, signing and verification of supported files are designed to happen
+            locally in the browser whenever possible.
           </p>
         </Card>
 
         <Card className="space-y-3 p-6 text-sm leading-relaxed text-slate-600">
           <h2 className="text-lg font-semibold text-slate-800">Your control</h2>
           <p>
-            You can delete all locally stored Orig data from the Profile page at any time. You can
-            also clear your browser&apos;s site data directly.
+            You can remove locally stored Orig data from the app where supported, or clear your
+            browser&apos;s site data directly.
           </p>
           <p>
-            Because Orig does not create a remote account, there is no server-side account data to
-            delete.
+            If a feature stores profile information through the app, deletion or reset behavior should
+            be handled through the relevant profile controls.
           </p>
         </Card>
       </div>
