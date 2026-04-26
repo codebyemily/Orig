@@ -21,7 +21,8 @@ export default function SignPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-slate-900 mb-2">Sign an Image</h1>
         <p className="text-slate-500">
-          Embed your invisible ownership signature into any image. The signed PNG downloads automatically.
+          Embed your invisible ownership signature into an image. PNG, JPEG, and WEBP are supported.
+          HEIC/HEIF is experimental depending on browser support. The signed output always downloads as PNG.
         </p>
       </div>
 

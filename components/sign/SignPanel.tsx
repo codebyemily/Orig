@@ -79,7 +79,14 @@ export default function SignPanel({ profile }: SignPanelProps) {
           <ImagePreview file={file} label="Ready to sign" />
 
           {error && (
-            <p className="text-sm text-red-600 text-center bg-red-50 rounded-lg p-3">{error}</p>
+            <p className="text-sm text-red-600 text-center bg-red-50 rounded-lg p-3">
+              {error}
+              {(error.includes('HEIC') || error.includes('HEIF')) && (
+                <span className="block mt-1 text-xs text-red-500">
+                  Tip: On iPhone, you can set camera format to “Most Compatible” (JPEG).
+                </span>
+              )}
+            </p>
           )}
 
           <div className="flex gap-3 justify-center">
@@ -97,7 +104,7 @@ export default function SignPanel({ profile }: SignPanelProps) {
           </div>
 
           <p className="text-xs text-slate-400 text-center">
-            Output is always PNG to preserve the invisible watermark.
+            Output is always PNG to preserve the invisible watermark. HEIC/HEIF input is experimental.
           </p>
         </div>
       )}

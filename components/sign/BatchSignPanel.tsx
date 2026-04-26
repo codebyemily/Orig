@@ -29,7 +29,7 @@ export default function BatchSignPanel({ profile }: BatchSignPanelProps) {
           onFiles={handleFiles}
           multiple
           label="Drop multiple images here"
-          sublabel="All images will be signed and downloaded separately"
+          sublabel="All images will be signed and downloaded separately. PNG, JPEG, and WEBP are supported. HEIC/HEIF is experimental."
         />
       ) : (
         <>
