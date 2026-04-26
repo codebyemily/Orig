@@ -43,8 +43,8 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur">
-      {/* Mobile layout */}
-      <nav className="mx-auto flex w-full items-center justify-between px-3 py-3 sm:px-4 md:hidden">
+      {/* Mobile */}
+      <nav className="flex w-full items-center justify-between px-4 py-3 md:hidden">
         <Link
           href="/registry"
           className="flex items-center gap-2 text-base font-bold tracking-tight text-slate-900"
@@ -90,13 +90,13 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Desktop layout */}
-      <nav className="relative mx-auto hidden w-full max-w-7xl items-center justify-center px-4 py-3 sm:px-6 lg:px-8 md:flex">
+      {/* Desktop */}
+      <nav className="relative hidden w-full items-center justify-center px-8 py-3 md:flex">
         <Link
           href="/registry"
-          className="absolute left-4 flex items-center gap-2 text-lg font-bold tracking-tight text-slate-900 sm:left-6 lg:left-8"
+          className="absolute left-8 flex items-center gap-2 text-lg font-bold tracking-tight text-slate-900"
         >
-          <span className="text-xl text-brand-600">◈</span>
+          <span className="text-brand-600">◈</span>
           <span>Orig</span>
         </Link>
 
