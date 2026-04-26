@@ -8,7 +8,7 @@ import Card from '@/components/shared/Card'
 
 export default function ProfileForm() {
   const [profile, setProfile] = useState<ArtistProfile | null>(null)
-  const [saved, setSaved] = useState(false)
+  const [saveMessage, setSaveMessage] = useState<string | null>(null)
 
   useEffect(() => {
     const p = loadProfile() ?? initProfile()
@@ -18,15 +18,18 @@ export default function ProfileForm() {
   function handleChange(field: keyof ArtistProfile, value: string) {
     if (!profile) return
     setProfile({ ...profile, [field]: value })
-    setSaved(false)
+    setSaveMessage(null)
   }
 
   function handleSave(e: React.FormEvent) {
     e.preventDefault()
     if (!profile) return
     saveProfile(profile)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2500)
+    setSaveMessage('Profile saved locally in this browser.')
+
+    window.setTimeout(() => {
+      setSaveMessage(null)
+    }, 2500)
   }
 
   if (!profile) return null
@@ -82,11 +85,20 @@ export default function ProfileForm() {
           />
         </div>
 
-        <div className="space-y-2 pt-1">
+        <div className="space-y-3 pt-1">
+          {saveMessage && (
+            <p className="rounded-xl bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
+              {saveMessage}
+            </p>
+          )}
+
           <Button type="submit" className="w-full">
-            {saved ? '✓ Profile saved' : 'Save profile'}
+            Save profile
           </Button>
-          <p className="text-xs text-slate-400">Saved locally in this browser only.</p>
+
+          <p className="text-xs text-slate-400">
+            Saved locally in this browser only.
+          </p>
         </div>
       </form>
     </Card>
