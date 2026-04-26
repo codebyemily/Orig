@@ -24,11 +24,6 @@ export default function SignPage() {
         <h1 className="mb-2 text-3xl font-bold text-slate-900">
           {fileType === 'image' ? 'Sign an Image' : 'Sign a PDF'}
         </h1>
-        <p className="text-slate-500">
-          {fileType === 'image'
-            ? 'Embed your invisible ownership signature into an image. PNG, JPEG, and WEBP are supported. HEIC/HEIF is experimental depending on browser support. The signed output always downloads as PNG.'
-            : 'Embed Orig ownership data into a PDF and download a signed copy with embedded metadata.'}
-        </p>
       </div>
 
       <div className="mb-4 flex w-fit gap-1 rounded-lg bg-slate-100 p-1">
@@ -88,10 +83,6 @@ export default function SignPage() {
       ) : (
         <PdfSignPanel profile={profile} />
       )}
-
-      <div className="mt-8">
-        <LimitationNotice />
-      </div>
     </PageContainer>
   )
 }

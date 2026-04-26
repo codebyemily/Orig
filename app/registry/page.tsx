@@ -135,10 +135,6 @@ export default function RegistryPage() {
           <h1 className="mb-1 text-3xl font-bold text-slate-900">
             Signature Registry
           </h1>
-          <p className="text-sm text-slate-500">
-            A local record of every file you&apos;ve signed.{' '}
-            <span className="text-slate-400">{entries.length} entries</span>
-          </p>
         </div>
 
         <ExportButtons entries={entries} />
