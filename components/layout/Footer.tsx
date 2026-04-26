@@ -9,7 +9,11 @@ export default function Footer() {
           <span>© 2026 Orig All rights reserved.</span>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-5">
+          <Link href="/about" className="transition-colors hover:text-slate-900">
+            About
+          </Link>
+
           <Link href="/privacy" className="transition-colors hover:text-slate-900">
             Privacy
           </Link>
