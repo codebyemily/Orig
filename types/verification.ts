@@ -7,4 +7,6 @@ export interface VerificationResult {
   payload?: SignaturePayload
   tampered?: boolean
   currentHash?: string
+  registeredName?: string
+  message?: string
 }

@@ -41,6 +41,7 @@ export default function VerifyResult({ result }: VerifyResultProps) {
   }
 
   if (result.status === 'own' && result.payload) {
+    const displayName = result.registeredName ?? result.payload.displayName
     return (
       <Card
         className={
@@ -72,7 +73,7 @@ export default function VerifyResult({ result }: VerifyResultProps) {
                   : 'text-sm text-emerald-700'
               }
             >
-              Signed by <strong>@{result.payload.displayName}</strong> on{' '}
+              Signed by <strong>@{displayName}</strong> on{' '}
               {formatDate(result.payload.timestamp)}.
             </p>
 
@@ -98,6 +99,7 @@ export default function VerifyResult({ result }: VerifyResultProps) {
   }
 
   if (result.status === 'other' && result.payload) {
+    const displayName = result.registeredName ?? result.payload.displayName
     return (
       <Card
         className={
@@ -129,7 +131,7 @@ export default function VerifyResult({ result }: VerifyResultProps) {
                   : 'text-sm text-brand-700'
               }
             >
-              Signed by <strong>@{result.payload.displayName}</strong> on{' '}
+              Signed by <strong>@{displayName}</strong> on{' '}
               {formatDate(result.payload.timestamp)}.
             </p>
 
@@ -179,11 +181,6 @@ function SignatureDetails({
 }) {
   return (
     <dl className="mt-3 grid grid-cols-1 gap-1 text-xs text-slate-600">
-      <div className="flex gap-2">
-        <dt className="font-medium text-slate-500 w-20 shrink-0">Artist ID</dt>
-        <dd className="font-mono truncate">{payload.artistId}</dd>
-      </div>
-
       {payload.contactUrl && (
         <div className="flex gap-2">
           <dt className="font-medium text-slate-500 w-20 shrink-0">Contact</dt>
@@ -199,13 +196,6 @@ function SignatureDetails({
           <dd>{payload.copyright}</dd>
         </div>
       )}
-
-      <div className="flex gap-2">
-        <dt className="font-medium text-slate-500 w-20 shrink-0">Hash</dt>
-        <dd className="font-mono text-xs truncate">
-          {payload.imageHash.slice(0, 24)}…
-        </dd>
-      </div>
     </dl>
   )
 }
