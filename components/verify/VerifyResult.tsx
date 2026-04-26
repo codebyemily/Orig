@@ -40,8 +40,9 @@ export default function VerifyResult({ result }: VerifyResultProps) {
     )
   }
 
-  if (result.status === 'own' && result.payload) {
+  if (result.status === 'own') {
     const displayName = result.payload.displayName
+
     return (
       <Card
         className={
@@ -62,7 +63,7 @@ export default function VerifyResult({ result }: VerifyResultProps) {
               }
             >
               {result.tampered
-                ? 'Your signature was found — image may have changed'
+                ? 'Your signature was found — visual content may have changed'
                 : 'Your signature — verified'}
             </p>
 
@@ -79,15 +80,15 @@ export default function VerifyResult({ result }: VerifyResultProps) {
 
             {result.tampered ? (
               <p className="text-sm text-amber-700">
-                The ownership signature is still present, but the image appears
-                different from the signed version. Possible causes include rotation, 
-                export, cropping, recompression, format conversion, screenshots, or
-                editing.
+                The ownership signature is still present, but the image no longer
+                visually matches the signed version closely enough. Possible
+                causes include cropping, resizing, heavy recompression,
+                screenshots, or editing.
               </p>
             ) : (
               <p className="text-sm text-emerald-700">
-                The ownership signature is present and the image appears to
-                match the signed version.
+                The ownership signature is present and the image visually matches
+                the signed version.
               </p>
             )}
 
@@ -98,8 +99,9 @@ export default function VerifyResult({ result }: VerifyResultProps) {
     )
   }
 
-  if (result.status === 'other' && result.payload) {
+  if (result.status === 'other') {
     const displayName = result.payload.displayName
+
     return (
       <Card
         className={
@@ -120,7 +122,7 @@ export default function VerifyResult({ result }: VerifyResultProps) {
               }
             >
               {result.tampered
-                ? 'Signature found — image may have changed'
+                ? 'Signature found — visual content may have changed'
                 : 'Signed by another artist'}
             </p>
 
@@ -137,10 +139,10 @@ export default function VerifyResult({ result }: VerifyResultProps) {
 
             {result.tampered ? (
               <p className="text-sm text-amber-700">
-                The Orig signature is still present, but the image appears
-                different from the signed version. Possible causes include
-                cropping, recompression, format conversion, screenshots, or
-                editing.
+                The Orig signature is still present, but the image no longer
+                visually matches the signed version closely enough. Possible
+                causes include cropping, resizing, heavy recompression,
+                screenshots, or editing.
               </p>
             ) : (
               <p className="text-sm text-brand-700">
@@ -174,11 +176,7 @@ export default function VerifyResult({ result }: VerifyResultProps) {
   return null
 }
 
-function SignatureDetails({
-  payload,
-}: {
-  payload: SignaturePayload
-}) {
+function SignatureDetails({ payload }: { payload: SignaturePayload }) {
   return (
     <dl className="mt-3 grid grid-cols-1 gap-1 text-xs text-slate-600">
       {payload.contactUrl && (
