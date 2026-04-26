@@ -4,12 +4,16 @@ export function exportRegistryAsJson(entries: RegistryEntry[]): string {
   return JSON.stringify(entries, null, 2)
 }
 
-export function downloadJson(json: string, filename: string): void {
-  const blob = new Blob([json], { type: 'application/json' })
+export function downloadJson(content: string, filename: string) {
+  const blob = new Blob([content], { type: 'application/json;charset=utf-8;' })
   const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = filename
-  a.click()
+
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+
   URL.revokeObjectURL(url)
 }
