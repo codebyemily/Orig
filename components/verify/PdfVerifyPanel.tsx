@@ -1,24 +1,24 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Card from '@/components/shared/Card'
 import Button from '@/components/shared/Button'
 import { validatePdfFile } from '@/lib/validation/pdfValidation'
 import { verifyPdf } from '@/lib/pdf/verifyPdf'
 import type { PdfVerificationResult } from '@/types/pdfSignature'
+import PdfVerifyResult from './PdfVerifyResult'
 
-function formatDate(iso: string) {
-  try {
-    return new Date(iso).toLocaleString(undefined, {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    })
-  } catch {
-    return iso
+function dataUrlToFile(dataUrl: string, filename: string): File {
+  const [header, base64] = dataUrl.split(',')
+  const mime = header.match(/:(.*?);/)?.[1] ?? 'application/pdf'
+  const binary = atob(base64)
+  const bytes = new Uint8Array(binary.length)
+
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i)
   }
+
+  return new File([bytes], filename, { type: mime })
 }
 
 export default function PdfVerifyPanel() {
@@ -26,6 +26,46 @@ export default function PdfVerifyPanel() {
   const [error, setError] = useState<string | null>(null)
   const [status, setStatus] = useState<'idle' | 'scanning' | 'done'>('idle')
   const [result, setResult] = useState<PdfVerificationResult | null>(null)
+
+  useEffect(() => {
+    const stored = sessionStorage.getItem('orig:reverify-entry')
+    if (!stored) return
+
+    try {
+      const entry = JSON.parse(stored) as {
+        fileType?: 'image' | 'pdf'
+        signedPdfDataUrl?: string
+        signedFilename: string
+        filename: string
+      }
+
+      if (entry.fileType !== 'pdf' || !entry.signedPdfDataUrl) return
+
+      sessionStorage.removeItem('orig:reverify-entry')
+
+      const restoredFile = dataUrlToFile(
+        entry.signedPdfDataUrl,
+        entry.signedFilename || entry.filename
+      )
+
+      setFile(restoredFile)
+      setStatus('scanning')
+
+      verifyPdf(restoredFile)
+        .then((verification) => {
+          setResult(verification)
+          setStatus('done')
+        })
+        .catch((err) => {
+          setError(
+            err instanceof Error ? err.message : 'Failed to verify this PDF.'
+          )
+          setStatus('idle')
+        })
+    } catch {
+      sessionStorage.removeItem('orig:reverify-entry')
+    }
+  }, [])
 
   const handleInput = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -126,52 +166,7 @@ export default function PdfVerifyPanel() {
             </Card>
           )}
 
-          {status === 'done' && result && (
-            <>
-              {result.found && result.payload ? (
-                <Card className="border-emerald-300 bg-emerald-50 p-6">
-                  <div className="flex items-start gap-3">
-                    <span className="text-3xl">📄</span>
-                    <div className="space-y-2">
-                      <p className="font-semibold text-emerald-800">
-                        PDF signature detected
-                      </p>
-                      <p className="text-sm text-emerald-700">
-                        Signed by <strong>@{result.payload.displayName}</strong> on{' '}
-                        {formatDate(result.payload.timestamp)}.
-                      </p>
-
-                      {result.payload.contactUrl && (
-                        <p className="text-xs text-slate-600">
-                          Contact: {result.payload.contactUrl}
-                        </p>
-                      )}
-
-                      {result.payload.copyright && (
-                        <p className="text-xs text-slate-600">
-                          Copyright: {result.payload.copyright}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </Card>
-              ) : (
-                <Card className="border-slate-200 p-6">
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl">🔍</span>
-                    <div>
-                      <p className="font-semibold text-slate-700">
-                        No Orig PDF signature detected
-                      </p>
-                      <p className="mt-0.5 text-sm text-slate-500">
-                        This PDF may not have been signed with Orig.
-                      </p>
-                    </div>
-                  </div>
-                </Card>
-              )}
-            </>
-          )}
+          {status === 'done' && result && <PdfVerifyResult result={result} />}
 
           <div className="text-center">
             <Button variant="ghost" onClick={handleAnother}>

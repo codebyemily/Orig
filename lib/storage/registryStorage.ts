@@ -14,7 +14,7 @@ export function addRegistryEntry(entry: RegistryEntry): void {
 }
 
 export function deleteRegistryEntry(id: string): void {
-  const registry = loadRegistry().filter((e) => e.id !== id)
+  const registry = loadRegistry().filter((entry) => entry.id !== id)
   setItem(KEY, registry)
 }
 

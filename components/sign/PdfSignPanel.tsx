@@ -8,9 +8,21 @@ import Card from '@/components/shared/Card'
 import Button from '@/components/shared/Button'
 import { validatePdfFile } from '@/lib/validation/pdfValidation'
 import { signPdf } from '@/lib/pdf/signPdf'
+import { addRegistryEntry } from '@/lib/storage/registryStorage'
 
 interface PdfSignPanelProps {
   profile: ArtistProfile | null
+}
+
+function blobToDataUrl(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = () => reject(new Error('Failed to save signed PDF to registry.'))
+
+    reader.readAsDataURL(blob)
+  })
 }
 
 export default function PdfSignPanel({ profile }: PdfSignPanelProps) {
@@ -65,15 +77,29 @@ export default function PdfSignPanel({ profile }: PdfSignPanelProps) {
       }
 
       const signedBlob = await signPdf(file, payload)
+      const signedPdfDataUrl = await blobToDataUrl(signedBlob)
+
+      const outputName = file.name.replace(/\.pdf$/i, '') + '-signed.pdf'
 
       const url = URL.createObjectURL(signedBlob)
       const link = document.createElement('a')
       link.href = url
-      link.download = file.name.replace(/\.pdf$/i, '') + '-signed.pdf'
+      link.download = outputName
       document.body.appendChild(link)
       link.click()
       link.remove()
       URL.revokeObjectURL(url)
+
+      addRegistryEntry({
+        id: crypto.randomUUID(),
+        fileType: 'pdf',
+        filename: file.name,
+        signedFilename: outputName,
+        signedPdfDataUrl,
+        timestamp: payload.timestamp,
+        artistId: profile.id,
+        displayName: profile.displayName,
+      })
 
       setStatus('done')
     } catch (err) {

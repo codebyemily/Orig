@@ -26,7 +26,7 @@ function formatDate(iso: string) {
 
 function legacyEntryAlert() {
   alert(
-    'This older registry entry does not include the full signed image. Please sign the image again to enable preview, download, and re-verify.'
+    'This older registry entry does not include the full signed file. Please sign it again to enable download and re-verify.'
   )
 }
 
@@ -56,7 +56,7 @@ export default function RegistryPage() {
 
   function handleDelete(id: string) {
     const confirmed = window.confirm(
-      'Remove this registry entry? This only removes the local record. It does not delete any image files.'
+      'Remove this registry entry? This only removes the local record. It does not delete any original files.'
     )
 
     if (!confirmed) return
@@ -66,7 +66,7 @@ export default function RegistryPage() {
   }
 
   function openSignedImagePopup(entry: RegistryEntry) {
-    if (!entry.signedImageDataUrl) {
+    if (entry.fileType !== 'image' || !entry.signedImageDataUrl) {
       legacyEntryAlert()
       return
     }
@@ -74,28 +74,58 @@ export default function RegistryPage() {
     setPreviewEntry(entry)
   }
 
-  function downloadSignedImage(entry: RegistryEntry) {
-    if (!entry.signedImageDataUrl) {
-      legacyEntryAlert()
+  function downloadSignedFile(entry: RegistryEntry) {
+    if (entry.fileType === 'image') {
+      if (!entry.signedImageDataUrl) {
+        legacyEntryAlert()
+        return
+      }
+
+      const link = document.createElement('a')
+      link.href = entry.signedImageDataUrl
+      link.download = entry.signedFilename || entry.filename
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
       return
     }
 
-    const link = document.createElement('a')
-    link.href = entry.signedImageDataUrl
-    link.download = entry.signedFilename || entry.filename
-    document.body.appendChild(link)
-    link.click()
-    link.remove()
+    if (entry.fileType === 'pdf') {
+      if (!entry.signedPdfDataUrl) {
+        legacyEntryAlert()
+        return
+      }
+
+      const link = document.createElement('a')
+      link.href = entry.signedPdfDataUrl
+      link.download = entry.signedFilename || entry.filename
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+    }
   }
 
   function handleReverify(entry: RegistryEntry) {
-    if (!entry.signedImageDataUrl) {
-      legacyEntryAlert()
+    if (entry.fileType === 'image') {
+      if (!entry.signedImageDataUrl) {
+        legacyEntryAlert()
+        return
+      }
+
+      sessionStorage.setItem('orig:reverify-entry', JSON.stringify(entry))
+      router.push('/verify')
       return
     }
 
-    sessionStorage.setItem('orig:reverify-entry', JSON.stringify(entry))
-    router.push('/verify?fromRegistry=1')
+    if (entry.fileType === 'pdf') {
+      if (!entry.signedPdfDataUrl) {
+        legacyEntryAlert()
+        return
+      }
+
+      sessionStorage.setItem('orig:reverify-entry', JSON.stringify(entry))
+      router.push('/verify')
+    }
   }
 
   return (
@@ -106,7 +136,7 @@ export default function RegistryPage() {
             Signature Registry
           </h1>
           <p className="text-sm text-slate-500">
-            A local record of every image you&apos;ve signed.{' '}
+            A local record of every file you&apos;ve signed.{' '}
             <span className="text-slate-400">{entries.length} entries</span>
           </p>
         </div>
@@ -117,11 +147,11 @@ export default function RegistryPage() {
       {entries.length === 0 ? (
         <EmptyState
           icon="📋"
-          title="No signed images yet"
-          description="Sign an image to see it appear here with a timestamp and file hash."
+          title="No signed files yet"
+          description="Sign an image or PDF to see it appear here."
           action={
             <Link href="/sign">
-              <Button>Sign your first image</Button>
+              <Button>Sign your first file</Button>
             </Link>
           }
         />
@@ -152,7 +182,7 @@ export default function RegistryPage() {
                       Signed
                     </th>
                     <th className="px-4 py-3 text-left font-semibold text-slate-600">
-                      Hash
+                      Type
                     </th>
                     <th className="px-4 py-3 text-left font-semibold text-slate-600">
                       Actions
@@ -167,7 +197,7 @@ export default function RegistryPage() {
                       className="transition-colors hover:bg-slate-50"
                     >
                       <td className="px-4 py-3">
-                        {entry.thumbnail ? (
+                        {entry.fileType === 'image' && entry.thumbnail ? (
                           <button
                             type="button"
                             onClick={() => openSignedImagePopup(entry)}
@@ -183,7 +213,7 @@ export default function RegistryPage() {
                           </button>
                         ) : (
                           <div className="flex h-10 w-10 items-center justify-center rounded-md bg-slate-100 text-lg text-slate-400">
-                            🖼️
+                            {entry.fileType === 'pdf' ? '📄' : '🖼️'}
                           </div>
                         )}
                       </td>
@@ -196,8 +226,8 @@ export default function RegistryPage() {
                         {formatDate(entry.timestamp)}
                       </td>
 
-                      <td className="max-w-[140px] truncate px-4 py-3 font-mono text-xs text-slate-400">
-                        {entry.imageHash.slice(0, 16)}…
+                      <td className="px-4 py-3 text-slate-500">
+                        {entry.fileType === 'pdf' ? 'PDF' : 'Image'}
                       </td>
 
                       <td className="px-4 py-3">
@@ -213,7 +243,7 @@ export default function RegistryPage() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => downloadSignedImage(entry)}
+                            onClick={() => downloadSignedFile(entry)}
                           >
                             Download
                           </Button>
@@ -243,65 +273,67 @@ export default function RegistryPage() {
         </>
       )}
 
-      {previewEntry && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 px-4"
-          role="dialog"
-          aria-modal="true"
-          onClick={() => setPreviewEntry(null)}
-        >
+      {previewEntry &&
+        previewEntry.fileType === 'image' &&
+        previewEntry.signedImageDataUrl && (
           <div
-            className="relative max-h-[90vh] w-full max-w-5xl rounded-2xl bg-white p-4 shadow-2xl"
-            onClick={(event) => event.stopPropagation()}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 px-4"
+            role="dialog"
+            aria-modal="true"
+            onClick={() => setPreviewEntry(null)}
           >
-            <div className="mb-4 flex items-center justify-between gap-4">
-              <div>
-                <h2 className="text-base font-semibold text-slate-900">
-                  Signed image preview
-                </h2>
-                <p className="text-sm text-slate-500">
-                  {previewEntry.signedFilename || previewEntry.filename}
-                </p>
+            <div
+              className="relative max-h-[90vh] w-full max-w-5xl rounded-2xl bg-white p-4 shadow-2xl"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className="mb-4 flex items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-base font-semibold text-slate-900">
+                    Signed image preview
+                  </h2>
+                  <p className="text-sm text-slate-500">
+                    {previewEntry.signedFilename || previewEntry.filename}
+                  </p>
+                </div>
+
+                <div className="flex gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => downloadSignedFile(previewEntry)}
+                  >
+                    Download
+                  </Button>
+
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleReverify(previewEntry)}
+                  >
+                    Re-verify
+                  </Button>
+
+                  <button
+                    type="button"
+                    onClick={() => setPreviewEntry(null)}
+                    className="rounded-lg px-3 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+                  >
+                    Close
+                  </button>
+                </div>
               </div>
 
-              <div className="flex gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => downloadSignedImage(previewEntry)}
-                >
-                  Download
-                </Button>
-
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleReverify(previewEntry)}
-                >
-                  Re-verify
-                </Button>
-
-                <button
-                  type="button"
-                  onClick={() => setPreviewEntry(null)}
-                  className="rounded-lg px-3 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-900"
-                >
-                  Close
-                </button>
+              <div className="flex max-h-[70vh] items-center justify-center overflow-auto rounded-xl bg-slate-100 p-4">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={previewEntry.signedImageDataUrl}
+                  alt={previewEntry.signedFilename || previewEntry.filename}
+                  className="max-h-[65vh] max-w-full object-contain"
+                />
               </div>
-            </div>
-
-            <div className="flex max-h-[70vh] items-center justify-center overflow-auto rounded-xl bg-slate-100 p-4">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={previewEntry.signedImageDataUrl}
-                alt={previewEntry.signedFilename || previewEntry.filename}
-                className="max-h-[65vh] max-w-full object-contain"
-              />
             </div>
           </div>
-        </div>
-      )}
+        )}
     </PageContainer>
   )
 }
