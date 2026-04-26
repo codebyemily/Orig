@@ -7,6 +7,7 @@ import { loadImageToCanvas } from './canvas/loadImageToCanvas'
 import { extractImageData } from './canvas/extractImageData'
 import { exportPng, triggerDownload } from './canvas/exportPng'
 import { generateThumbnail } from './canvas/thumbnail'
+import { compressForStorage } from './canvas/compressForStorage'
 import { encodeLSB } from './stego/encodeLSB'
 import { serializePayload } from './stego/payload'
 import { computeRotationInvariantVisualHash } from './crypto/visualHash'
@@ -14,17 +15,6 @@ import { addRegistryEntry } from './storage/registryStorage'
 
 type SignStatus = 'idle' | 'signing' | 'done' | 'error'
 
-function blobToDataUrl(blob: Blob): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-
-    reader.onload = () => resolve(reader.result as string)
-    reader.onerror = () =>
-      reject(new Error('Failed to save signed image to registry.'))
-
-    reader.readAsDataURL(blob)
-  })
-}
 
 export function useSignImage(profile: ArtistProfile | null) {
   const [status, setStatus] = useState<SignStatus>('idle')
@@ -73,7 +63,7 @@ export function useSignImage(profile: ArtistProfile | null) {
 
         const blob = await exportPng(canvas)
         const thumbnail = generateThumbnail(canvas)
-        const signedImageDataUrl = await blobToDataUrl(blob)
+        const signedImageDataUrl = compressForStorage(canvas)
 
         const baseName = file.name.replace(/\.[^.]+$/, '')
         const outputName = `${baseName}-signed.png`
