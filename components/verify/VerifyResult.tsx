@@ -41,7 +41,7 @@ export default function VerifyResult({ result }: VerifyResultProps) {
   }
 
   if (result.status === 'own' && result.payload) {
-    const displayName = result.registeredName ?? result.payload.displayName
+    const displayName = result.payload.displayName
     return (
       <Card
         className={
@@ -99,7 +99,7 @@ export default function VerifyResult({ result }: VerifyResultProps) {
   }
 
   if (result.status === 'other' && result.payload) {
-    const displayName = result.registeredName ?? result.payload.displayName
+    const displayName = result.payload.displayName
     return (
       <Card
         className={

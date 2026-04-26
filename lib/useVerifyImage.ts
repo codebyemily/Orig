@@ -92,12 +92,10 @@ export function useVerifyImage() {
         const verificationStatus: 'own' | 'other' =
           myProfile && payload.artistId === myProfile.id ? 'own' : 'other'
 
-        let registeredName: string | undefined
         try {
           const res = await fetch(`/api/profiles?id=${encodeURIComponent(payload.artistId)}`)
           if (res.ok) {
             const profile = await res.json()
-            registeredName = profile.displayName
           }
         } catch {
           // DB lookup failure doesn't block verification
@@ -108,7 +106,6 @@ export function useVerifyImage() {
           payload,
           tampered,
           currentHash,
-          registeredName,
         })
 
         setStatus('done')
