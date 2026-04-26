@@ -201,7 +201,7 @@ export default function RegistryPage() {
                       </td>
 
                       <td className="px-4 py-3">
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap items-baseline gap-2 -ml-3">
                           <Button
                             variant="ghost"
                             size="sm"
