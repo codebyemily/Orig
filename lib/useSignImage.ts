@@ -9,7 +9,7 @@ import { exportPng, triggerDownload } from './canvas/exportPng'
 import { generateThumbnail } from './canvas/thumbnail'
 import { encodeLSB } from './stego/encodeLSB'
 import { serializePayload } from './stego/payload'
-import { normalizeImageDataForHash, sha256Hex } from './crypto/sha256'
+import { computeRotationInvariantVisualHash } from './crypto/visualHash'
 import { addRegistryEntry } from './storage/registryStorage'
 
 type SignStatus = 'idle' | 'signing' | 'done' | 'error'
@@ -40,11 +40,14 @@ export function useSignImage(profile: ArtistProfile | null) {
       setStatus('signing')
       setError(null)
 
-    try {
-      const canvas = await loadImageToCanvas(file)
-      const imageData = extractImageData(canvas)
-      const normalizedBytes = normalizeImageDataForHash(imageData.data)
-      const imageHash = await sha256Hex(normalizedBytes)  
+      try {
+        const canvas = await loadImageToCanvas(file)
+        const imageData = extractImageData(canvas)
+
+        // Rotation-tolerant visual hash.
+        // This lets Orig treat 90/180/270 rotation as the same image,
+        // while still catching obvious visual edits.
+        const imageHash = computeRotationInvariantVisualHash(canvas)
 
         const payload: SignaturePayload = {
           artistId: profile.id,

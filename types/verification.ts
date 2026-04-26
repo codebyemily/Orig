@@ -1,12 +1,18 @@
 import type { SignaturePayload } from './signature'
 
-export type VerificationStatus = 'own' | 'other' | 'none' | 'tampered'
+export type VerificationStatus = 'own' | 'other' | 'none' | 'error'
 
-export interface VerificationResult {
-  status: VerificationStatus
-  payload?: SignaturePayload
-  tampered?: boolean
-  currentHash?: string
-  registeredName?: string
-  message?: string
-}
+export type VerificationResult =
+  | {
+      status: 'none'
+    }
+  | {
+      status: 'own' | 'other'
+      payload: SignaturePayload
+      tampered: boolean
+      currentHash: string
+    }
+  | {
+      status: 'error'
+      message: string
+    }
