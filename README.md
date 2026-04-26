@@ -157,10 +157,9 @@ For PDFs, Orig uses `pdf-lib` to embed an Orig signature marker and ownership pa
 | Image Signing | Custom LSB steganography |
 | PDF Signing | pdf-lib |
 | Hashing | Web Crypto API / SHA-256, visual hash logic |
-| File Handling | File API, FileReader, drag-and-drop |
+| File Handling | File API, FileReader |
 | Local Storage | localStorage |
 | Database | SQLite |
-| Deployment | TBD |
 
 ---
 
